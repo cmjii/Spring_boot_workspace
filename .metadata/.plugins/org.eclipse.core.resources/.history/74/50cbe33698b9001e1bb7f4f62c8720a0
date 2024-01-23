@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html xmlns:th="http//www.thymeleaf.org">
+<th:block th:fragment="setFragment(content)">
+<head>
+<meta charset="UTF-8">
+<title>Spring boot pratice</title>
+</head>
+<body>
+	
+</body>
+</th:block>
+</html>

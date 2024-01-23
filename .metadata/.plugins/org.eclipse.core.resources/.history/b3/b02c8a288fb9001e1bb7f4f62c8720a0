@@ -1,0 +1,18 @@
+package com.example.demo.config;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+// 리소스 안에있는 properties 사용 할게요
+@PropertySource("classpath:/application.properties") 
+@Configuration
+public class DatabaseConfig {
+	@Autowired
+	private ApplicationContext applicationcontext;
+//	properties소스에서 가져오는 value값
+	@Value()
+	private String mapperLocations;
+	
+}

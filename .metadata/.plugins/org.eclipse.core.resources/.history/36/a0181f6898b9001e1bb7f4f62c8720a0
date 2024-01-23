@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http//www.thymeleaf.org">
+<th:block th:fragment="setFragment(content)">
+<head>
+<meta charset="UTF-8">
+<title>Spring boot practice</title>
+<link rel="stylesheet" th:href="@{/dist/css/bootstrap.min.css}">
+<script type="text/javascript" th:src="@{/dist/js/bootstrap.b}"></script>
+</head>
+<body>
+	
+</body>
+</th:block>
+</html>
