@@ -1,7 +1,10 @@
 package com.example.demo.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
+import com.example.demo.domain.BoardVO;
 import com.example.demo.repository.BoardMapper;
 
 import lombok.RequiredArgsConstructor;
@@ -12,4 +15,34 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BoardServicelmpl implements BoardService{
 	private final BoardMapper mapper;
+
+	@Override
+	public int insert(BoardVO bvo) {
+		return mapper.insert(bvo);
+	}
+
+	@Override
+	public List<BoardVO> getList() {
+		return mapper.getList();
+	}
+
+	@Override
+	public BoardVO detail(long bno) {
+		return mapper.detail(bno);
+	}
+
+	@Override
+	public void modify(BoardVO bvo) {
+		 mapper.modify(bvo);
+	}
+
+	@Override
+	public int delete(int bno) {
+		// TODO Auto-generated method stub
+		return mapper.delete(bno);
+	}
+
+
+
+
 }

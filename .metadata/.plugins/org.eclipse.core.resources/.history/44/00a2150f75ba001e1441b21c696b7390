@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout :: setFragment(~{this::content})}">
+	<th:block th:fragment="content"> 
+	
+<div class="container"  style="max-width: 1100px; margin-top: 40px;">
+<table class="table table-hover">
+  <thead>
+    <tr class="align-baseline" style="height: 50px; vertical-align:middle">
+      <th scope="col">번호</th>
+      <th scope="col">제목</th>
+      <th scope="col">작성자</th>
+      <th scope="col">작성일</th>
+      <th scope="col">댓글</th>
+      <th scope="col">조회</th>
+    </tr>
+  </thead>
+  <tbody class="table-group-divider">
+  	 <th:block th:each="list : ${list}">
+                <tr id="table" style="cursor: pointer; height: 50px; vertical-align: middle">
+                    <th scope="row" th:text="${list.bno}"></th>
+                    <!-- 수정: href 속성에서 ${bvo.bno} -> ${list.bno} -->
+                    <td><a th:href="@{/board/detail(bno=${list.bno})}" id="url" style="color: black; text-decoration: none;" th:text="${list.title}"></a></td>
+                    <td th:text="${list.writer}"></td>
+                    <td th:text="${list.regAt}"></td>
+                </tr>
+     </th:block>
+  </tbody>
+</table>
+</div>
+	</th:block>
+</th:block>
+
+<script th:inline="javascript">
+const del = [[${del}]]
+if(del==="1"){
+	
+if(confirm("삭제하겠습니까?")){
+	alert("삭제완료");
+}else{
+	alert("삭제실패");
+}
+	
+}
+
+
+document.getElementById('table').addEventListener('click',(e)=>{
+    document.getElementById('url').click();
+})
+
+</script>

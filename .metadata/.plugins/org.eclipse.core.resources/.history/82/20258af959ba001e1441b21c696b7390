@@ -1,0 +1,26 @@
+package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.domain.BoardVO;
+import com.example.demo.repository.BoardMapper;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class BoardServicelmpl implements BoardService{
+	private final BoardMapper mapper;
+
+	@Override
+	public int insert(BoardVO bvo) {
+		return mapper.insert(bvo);
+	}
+
+	@Override
+	public BoardVO getList() {
+		return mapper.getList();
+	}
+}

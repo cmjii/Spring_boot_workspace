@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout :: setFragment(~{this::content})}">
+	<th:block th:fragment="content"> 
+	
+	<div class="container-md" style="max-width: 1100px; border: 0.5px solid gray; padding: 50px; border-radius: 20px; margin-top: 50px;">
+	<h2 style="font-family: 'Jua', sans-serif;">글보기</h2>
+	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+	<div class="mb-3" th:text="${bvo.regAt }" >
+	</div>
+	<div class="mb-3"  >
+	</div>
+	</div>
+	<div class="input-group mb-3">
+	  <span class="input-group-text" id="basic-addon1">제목</span>
+	  <input type="text" class="form-control" th:value="${bvo.title}" readonly="readonly">
+	  <span class="input-group-text" id="basic-addon1">작성자</span>
+	  <input type="text" class="form-control"  th:value="${bvo.writer}" readonly="readonly">
+	</div>
+	
+	
+	<div class="input-group">
+	  <span class="input-group-text">내용</span>
+	  <textarea class="form-control" readonly="readonly">"${bvo.content}"</textarea>
+	</div>
+	</div>
+	</th:block>
+</th:block>
