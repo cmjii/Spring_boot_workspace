@@ -9,7 +9,7 @@
 	</insert>
 	
 	<select id="getList" resultType="com.example.demo.domain.BoardVO">
-		select * from board
+		select * from board <include refid="search"></include> order by bno desc limit #{pageStart}, #{qty}
 	</select>
 	
 	<select id="detail" resultType="com.example.demo.domain.BoardVO">
@@ -23,5 +23,31 @@
 	<delete id="delete">
 		delete from board where bno = #{bno}
 	</delete>
+	
+	<select id="gettotalCount" resultType="int">
+		select count(bno) from board <include refid="search"></include>
+	</select>
+	
+	<sql id="search">
+		<if test="type!=null"> <!-- pgvo안에 있는 gettype  -->
+			<trim prefix="where(" suffix=")" prefixOverrides="or">
+			<foreach collection="typeToArray" item="type">
+				<trim prefix="or">
+					<choose>
+						<when test="type=='t'.toString()"> <!-- type == gettype t==문자 't' -->
+							title like concat('%',#{keyword},'%')
+						</when>
+						<when test="type=='w'.toString()"> <!-- type == gettype t==문자 't' -->
+							writer like concat('%',#{keyword},'%')
+						</when>
+						<when test="type=='c'.toString()"> <!-- type == gettype t==문자 't' -->
+							content like concat('%',#{keyword},'%')
+						</when>
+					</choose>
+				</trim>
+			</foreach>
+			</trim>
+		</if>
+	</sql>
 	
 </mapper>

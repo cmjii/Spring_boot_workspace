@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{layout :: setFragment(~{this::content})}">
 	<th:block th:fragment="content"> 
-	<form action="/board/modify" method="post">
+	<form action="/board/modify" method="post" id="form">
 	<div class="container-md" style="max-width: 1100px; border: 0.5px solid gray; padding: 50px; border-radius: 20px; margin-top: 50px;">
 	<h2 style="font-family: 'Jua', sans-serif;">글수정</h2>
 <input type="hidden" name="bno" th:value="${bvo.bno}">
@@ -29,5 +29,6 @@
 	 </div>
 	</div>
 	</form>
+	 <script th:src="@{/js/boardDetail.js}"></script> <!-- 스크립트 사용해서 링크 이동 -->
 	</th:block>
 </th:block>

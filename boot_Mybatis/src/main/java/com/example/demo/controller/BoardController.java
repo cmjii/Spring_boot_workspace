@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.domain.BoardVO;
+import com.example.demo.domain.PagingVO;
+import com.example.demo.handler.PagingHandler;
 import com.example.demo.service.BoardService;
 
 import lombok.RequiredArgsConstructor;
@@ -36,9 +38,16 @@ public class BoardController {
 	}
 	
 	@GetMapping("/list")
-	public void list(Model m) {
-		List<BoardVO> list = bsv.getList();
+	public void list(Model m,PagingVO pgvo) {
+		log.info("pgvo++++++++"+pgvo);
+		//totalCount
+		int totalCount = bsv.gettotalCount(pgvo);
+		//PagingHandler객체 생성
+		PagingHandler ph = new PagingHandler(pgvo, totalCount);
+		List<BoardVO> list = bsv.getList(pgvo);
 		m.addAttribute("list", list);
+		//model에 PagingHandler객체 보내기
+		m.addAttribute("ph", ph);
 	}
 	
 	@GetMapping({"/detail", "/modify"})
@@ -63,4 +72,6 @@ public class BoardController {
 		re.addFlashAttribute("del", "1");
 		return "redirect:/board/list";
 	}
+	
+	
 }

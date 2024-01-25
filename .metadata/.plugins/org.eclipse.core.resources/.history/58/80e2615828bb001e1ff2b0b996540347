@@ -1,0 +1,53 @@
+package com.example.demo.service;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.domain.BoardVO;
+import com.example.demo.domain.PagingVO;
+import com.example.demo.repository.BoardMapper;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class BoardServicelmpl implements BoardService{
+	private final BoardMapper mapper;
+
+	@Override
+	public int insert(BoardVO bvo) {
+		return mapper.insert(bvo);
+	}
+
+	@Override
+	public List<BoardVO> getList(PagingVO pgvo) {
+		return mapper.getList(pgvo);
+	}
+
+	@Override
+	public BoardVO detail(long bno) {
+		return mapper.detail(bno);
+	}
+
+	@Override
+	public void modify(BoardVO bvo) {
+		 mapper.modify(bvo);
+	}
+
+	@Override
+	public int delete(int bno) {
+		return mapper.delete(bno);
+	}
+
+	@Override
+	public int gettotalCount() {
+		return mapper.gettotalCount();
+	}
+
+
+
+
+}
