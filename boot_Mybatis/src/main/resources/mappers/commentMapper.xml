@@ -7,5 +7,17 @@
 	<insert id="insert">
 		insert into comment (bno,writer,content) values (#{bno},#{writer},#{content})
 	</insert>
+	
+	<select id="getTotal" resultType="int">
+		select count(bno) from comment where bno = #{bno}
+	</select>
+	
+	<select id="getList" resultType="com.example.demo.domain.CommentVO">
+		select * from comment where bno = #{bno} order by cno desc limit #{pgvo.pageStart}, #{pgvo.qty}
+	</select>
+	
+	<update id="edit">
+		update comment set content= #{content}, mod_at=now() where cno = #{cno}
+	</update>
 
 </mapper>

@@ -1,0 +1,76 @@
+console.log("comment in");
+console.log(bno);
+
+document.getElementById('cmtPostBtn').addEventListener('click',()=>{
+	const cmtText = document.getElementById('cmtText').value;
+	if (cmtText == null || cmtText == '') {
+		alert("댓글을 입력해주세요.")
+		cmtText.focus();
+		return false;
+	} else {
+		let cmtData = {
+			bno: bno,
+			writer: document.getElementById('cmtWriter').innerText,
+			content: cmtText
+		};
+		console.log(cmtData);
+		commentToServer(cmtData).then(result => {
+			if (result === "1") {
+				alert("댓글 등록 완료");
+				cmtText.value = "";
+			}
+			spreadComment(bno);
+		})
+	}
+});
+
+async function commentToServer(cmtData) {
+	try {
+		const url = "/comment/post"
+		const config = {
+			method: "post",
+			headers: {
+				'content-type': 'application/json; charset=UTF-8'
+			},
+			body: JSON.stringify(cmtData)
+		};
+		const resp = await fetch(url, config);
+		const result = await resp.text();
+		return result;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+//댓글 가져오기
+async function getComment(bno,page){
+	try{
+	const resp = await fetch("/comment/"+bno);
+	const result = await resp.json();
+	return result;
+	}catch(error){
+		console.log(error);
+	}
+	
+}
+
+//댓글뿌리기
+function spreadComment(bno){
+	getComment(bno).then(result=>{
+		console.log(result);
+		const ul = document.getElementById('cmtListArea');
+		if(result.length>0){
+			ul.innerHTML = ''; //ul에 원래 있던 html 값 지우기
+			for(let cvo of result) {
+				let li =`<li data-cno=${cvo.cno} class="list-group-item">`;
+				li += `<div class="mb-3">`;
+				li += `<div class="fw-bold">${cvo.writer}</div>`;
+				li += `${cvo.content}`;
+				li += `</div>`;
+				li += `<span class="badge rounded-pill text-bg-warning">${cvo.modAt}</span>`;
+				li += `</li>`;
+				ul.innerHTML += li;
+			}
+		}
+	})
+}

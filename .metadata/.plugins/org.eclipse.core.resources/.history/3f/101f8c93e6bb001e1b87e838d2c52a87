@@ -1,0 +1,30 @@
+package com.example.demo.service;
+
+import org.springframework.stereotype.Service;
+
+import com.example.demo.domain.CommentVO;
+import com.example.demo.domain.PagingVO;
+import com.example.demo.handler.PagingHandler;
+import com.example.demo.repository.CommentMapper;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class CommentServiceImpl implements CommentService{
+	private final CommentMapper cmapper;
+
+	@Override
+	public int insert(CommentVO cvo) {
+		// TODO Auto-generated method stub
+		return cmapper.insert(cvo);
+	}
+
+	@Override
+	public PagingHandler getList(int bno, PagingVO pgvo) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+}
