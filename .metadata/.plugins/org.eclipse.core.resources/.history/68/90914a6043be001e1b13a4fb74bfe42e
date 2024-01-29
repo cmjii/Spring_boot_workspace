@@ -1,0 +1,172 @@
+console.log("comment in");
+console.log(bno);
+
+document.getElementById('cmtPostBtn').addEventListener('click',()=>{
+	const cmtText = document.getElementById('cmtText').value;
+	if (cmtText == null || cmtText == '') {
+		alert("댓글을 입력해주세요.")
+		cmtText.focus();
+		return false;
+	} else {
+		let cmtData = {
+			bno: bno,
+			writer: document.getElementById('cmtWriter').innerText,
+			content: cmtText
+		};
+		console.log(cmtData);
+		commentToServer(cmtData).then(result => {
+			if (result === "1") {
+				alert("댓글 등록 완료");
+				cmtText.value = "";
+			}
+			spreadComment(bno);
+		})
+	}
+});
+
+async function commentToServer(cmtData) {
+	try {
+		const url = "/comment/post"
+		const config = {
+			method: "post",
+			headers: {
+				'content-type': 'application/json; charset=UTF-8'
+			},
+			body: JSON.stringify(cmtData)
+		};
+		const resp = await fetch(url, config);
+		const result = await resp.text();
+		return result;
+	} catch (error) {
+		console.log(error);
+	}
+}
+
+//댓글 가져오기
+async function getComment(bno,page){
+	try{
+	const resp = await fetch("/comment/"+bno+"/"+page);
+	const result = await resp.json();
+	return result;
+	}catch(error){
+		console.log(error);
+	}
+	
+}
+
+//댓글뿌리기
+function spreadComment(bno,page=1){ //page가 없으면 1 있으면 해당 페이지
+	getComment(bno,page).then(result=>{
+		console.log(result);
+		const ul = document.getElementById('cmtListArea');
+		if(result.cmtList.length>0){
+			if(page ==1){ //1page에서만 댓글 내용 지우기
+				ul.innerHTML='';
+			}
+			for(let cvo of result.cmtList) {
+				let li =`<li data-cno="${cvo.cno}" class="list-group-item">`;
+				li += `<div class="mb-3">`;
+				li += `<div class="fw-bold">${cvo.writer}</div>`;
+				li += `${cvo.content}`;
+				li += `</div>`;
+				li += `<span class="badge rounded-pill text-bg-warning">${cvo.modAt}</span>`;
+				li += `<div class="d-grid gap-2 d-md-flex justify-content-md-end">`;
+				li += `<button type="button" class="btn btn-outline-warning mod" id="regBtn" style="float: right;" data-bs-toggle="modal" data-bs-target="#myModal">수정</button>`;
+				li += `<button type="button" class="btn btn-outline-danger cdel" id="regBtn" style="float: right;">삭제</button>`;
+				li += `</div>`;
+				li += `</li>`;
+				ul.innerHTML += li;
+			}
+		//page처리
+			let moreBtn = document.getElementById('moreBtn');
+			//현재 페이지 번호와 전체 페이지 번호보다 작다면 
+			//아직 나와야 할 페이지가 있다면..
+			if(result.pgvo.pageNo < result.endPage){
+				//숨김 속성 해지
+				moreBtn.style.visibility = "visible"; //표시
+				//페이지 +1
+				moreBtn.dataset.page = page+1;
+			}else{
+				moreBtn.style.visibility = "hidden" //숨김
+			}
+		}else{
+			let li = `<li class="list-group-item"> 댓글이 없습니다. </li>`;
+			ul.innerHTML = li;
+		}
+	})
+};
+
+
+//수정
+document.addEventListener('click',(e)=>{
+	if(e.target.classList.contains('mod')){
+		//수정
+		let li = e.target.closest('li'); //타켓에 가장 가까운 li찾기 : 내 버튼이 포함되어 있는 li찾기
+		let cmtText = li.querySelector('.fw-bold').nextSibling; // nextsibling : 같은 부모의 다음 형제 객체를 반환
+		console.log(cmtText);
+		//nodeValue == 현재 선택한 노드의 value반환
+		document.getElementById('cmtTextMod').value = cmtText.nodeValue;
+		document.getElementById('cmtModBtn').setAttribute('data-cno',li.dataset.cno);
+	}else if(e.target.id=='cmtModBtn'){
+		//모달 수정 버튼
+		let cmtDataMod={
+			cno: e.target.dataset.cno,
+			content: document.getElementById('cmtTextMod').value
+		};
+		//비동기 통신
+		editComment(cmtDataMod).then(result=>{
+			if(result === "1"){
+				alert("수정이 완료되었습니다.");
+				//모달창 닫기
+				document.querySelector('.btn-close').click();
+			}
+			spreadComment(bno);
+		})	
+	}else if(e.target.classList.contains('cdel')){
+		//삭제
+		let li = e.target.closest('li');
+		let cno = li.dataset.cno; 
+		console.log(cno);
+		if(e.target.classList.contains('cdel')){
+			if(confirm('댓글을 삭제하시겠습니까?')){
+			removeComment(cno);
+			}
+		}
+	}else if(e.target.id=='moreBtn'){
+		spreadComment(bno,parseInt(e.target.dataset.page));
+	}
+});
+
+
+
+async function editComment(cmtDataMod){
+	try{
+		const url = "/comment/edit";
+		const config = {
+			headers:{
+				'content-type' : 'application/json; charset=utf-8'
+			},
+			body:JSON.stringify(cmtDataMod)
+		};
+		const resp = await fetch (url, config);
+		const result = await resp.text();
+		return result;
+	}catch(error){
+		console.log(error);
+	}
+}
+
+async function removeComment(cno){
+	try{
+		
+		const url = "/comment/remove/"+cno;
+		const config = {
+			method:'delete',
+		};	
+  	 	 const resp = await fetch(url,config);
+         const result = await resp.text();
+         return result;
+	}catch(error){
+		console.log(error);
+	}
+}

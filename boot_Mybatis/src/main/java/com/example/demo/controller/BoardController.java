@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.domain.BoardDTO;
 import com.example.demo.domain.BoardVO;
+import com.example.demo.domain.FileVO;
 import com.example.demo.domain.PagingVO;
+import com.example.demo.handler.FileHandler;
 import com.example.demo.handler.PagingHandler;
 import com.example.demo.service.BoardService;
 
@@ -25,15 +29,21 @@ import lombok.extern.slf4j.Slf4j;
 public class BoardController {
 	
 	private final BoardService bsv;
+	private final FileHandler fh;
 	
 	@GetMapping("/register")
 	public void register() {
 	}
 	
 	@PostMapping("/register")
-	public String register(BoardVO bvo) {
+	public String register(BoardVO bvo, @RequestParam(name="files",required = false) MultipartFile[] files) {
 		log.info("bvo++++++++++++++++++++++++++"+bvo);
-		int isok = bsv.insert(bvo);
+		List<FileVO> flist = null;
+		if(files[0].getSize()>0 || files != null) {
+			//파일 핸들러 작업
+			flist = fh.uploadFiles(files);
+		}
+		int isok = bsv.insert(new BoardDTO(bvo,flist));
 		return "index";
 	}
 	
@@ -53,8 +63,7 @@ public class BoardController {
 	@GetMapping({"/detail", "/modify"})
 	public void detail(Model m, @RequestParam("bno") long bno) {
 		log.info("bno +++++++++++++++++++"+bno);
-		BoardVO bvo = bsv.detail(bno);
-		m.addAttribute("bvo", bvo);
+		m.addAttribute("bdto", bsv.detail(bno));
 	}
 
 	@PostMapping("/modify")

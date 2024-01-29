@@ -3,10 +3,14 @@ package com.example.demo.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.example.demo.domain.BoardDTO;
 import com.example.demo.domain.BoardVO;
+import com.example.demo.domain.FileVO;
 import com.example.demo.domain.PagingVO;
 import com.example.demo.repository.BoardMapper;
+import com.example.demo.repository.FileMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,20 +20,37 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BoardServicelmpl implements BoardService{
 	private final BoardMapper mapper;
+	private final FileMapper fmapper;
 
 	@Override
-	public int insert(BoardVO bvo) {
-		return mapper.insert(bvo);
+	@Transactional
+	public int insert(BoardDTO boardDTO) {
+		int isok = mapper.insert(boardDTO.getBvo());
+		if(boardDTO.getFlist()==null) {
+			return isok;
+		}
+		if(isok > 0 && boardDTO.getFlist().size()>0) {
+			long bno = mapper.getBno();
+			for(FileVO fvo : boardDTO.getFlist()) {
+				fvo.setBno(bno);
+				isok *= fmapper.insertFile(fvo);
+			}
+		}
+		return isok;
 	}
 
 	@Override
 	public List<BoardVO> getList(PagingVO pgvo) {
 		return mapper.getList(pgvo);
 	}
-
+	@Transactional
 	@Override
-	public BoardVO detail(long bno) {
-		return mapper.detail(bno);
+	public BoardDTO detail(long bno) {
+		BoardDTO bdto = new BoardDTO();
+		bdto.setBvo(mapper.detail(bno));
+		bdto.setFlist(fmapper.getFileList(bno));;
+		log.info("bdto::::::::::::::::::::::::::::>>>>>>>>>>>>>>>>>>>>"+bdto);
+		return bdto;
 	}
 
 	@Override

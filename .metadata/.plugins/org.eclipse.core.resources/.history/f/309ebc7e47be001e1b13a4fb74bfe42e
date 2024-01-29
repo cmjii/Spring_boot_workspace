@@ -1,0 +1,6 @@
+package com.example.demo.domain;
+
+public class BoardDTO {
+	private BoardVO bvo;
+	private List<FileVO> flist;
+}

@@ -1,0 +1,20 @@
+package com.example.demo.domain;
+CREATE TABLE file (
+	    uuid VARCHAR(256) NOT NULL,
+	    save_dir VARCHAR(256) NOT NULL,
+	    file_name VARCHAR(256) NOT NULL,
+	    file_type INT(1) DEFAULT 0,
+	    bno BIGINT NOT NULL,
+	    file_size BIGINT NOT NULL,
+	    reg_at DATETIME DEFAULT NOW(),
+	    PRIMARY KEY (uuid)
+	);
+public class FileVO {
+	private String uuid;
+	private String saveDir;
+	private String fileName;
+	private int fileType;
+	private long bno;
+	private long fileSize;
+	private String regAt;
+}

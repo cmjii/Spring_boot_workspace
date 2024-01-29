@@ -22,4 +22,6 @@ public interface BoardMapper {
 
 	int gettotalCount(PagingVO pgvo);
 
+	long getBno();
+
 }

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout :: setFragment(~{this::content})}">
+	<th:block th:fragment="content"> 
+	
+	<div class="container-md" style="max-width: 1100px; border: 0.5px solid gray; padding: 50px; border-radius: 20px; margin-top: 50px;">
+	<h2 style="font-family: 'Jua', sans-serif;">글보기</h2>
+	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+	<div class="mb-3" th:text="${bvo.regAt }" >
+	</div>
+	<div class="mb-3"  >
+	</div>
+	</div>
+	<div class="input-group mb-3">
+	  <span class="input-group-text" id="basic-addon1">제목</span>
+	  <input type="text" class="form-control" th:value="${bdto.bvo.title}" readonly="readonly">
+	  <span class="input-group-text" id="basic-addon1">작성자</span>
+	  <input type="text" class="form-control"  th:value="${bdto.bvo.writer}" readonly="readonly">
+	</div>
+	<div class="input-group">
+	  <span class="input-group-text">내용</span>
+	  <textarea class="form-control" readonly="readonly">[[${bdto.bvo.content}]]</textarea>
+	</div><br>
+	
+	<!-- 파일 출력 라인 -->
+	<div class="mb-3"  >
+		<ul class="list-group list-group-flush" id="cmtListArea">
+		  <li th:each="fvo:${bdto.flist}" class="list-group-item">
+		  	<div th:if="${fvo.fileType >0}" class="mb-3">
+		  		<img alt="" src="">
+		  	</div>	
+		  	<div th:if="${fvo.fileType >0}" class="mb-3">
+		  		<img alt="" src="">
+		  	</div>	
+		  	<div class="mb-3"  >
+		  		<div class="fw-bold">Writer</div>
+		  		content
+		  	</div>
+		  	<span class="badge rounded-pill text-bg-warning">modAt</span>
+		  </li>
+		</ul>
+	</div>
+	
+	 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+	  <a th:href="@{/board/modify(bno=${bvo.bno})}"><button type="button" class="btn btn-outline-secondary" id="regBtn" style="float: right;">수정</button></a>
+	  <a><button type="button" class="btn btn-outline-danger del" id="regBtn" style="float: right;">삭제</button></a>
+	  <a href="/board/list"><button type="button" class="btn btn-outline-danger" id="regBtn" style="float: right;">게시판</button></a>
+	 </div>
+	 
+	 <div class="mb-3" >
+	<h5 style="font-family: 'Jua', sans-serif;">댓글</h5>
+	</div>
+	<!-- 댓글 등록 라인 -->
+   <br><div class="input-group mb-3" style="max-width: 1100px;">
+	  <span class="input-group-text" id="cmtWriter">[[${bdto.bvo.writer}]]</span>
+	  <input type="text" class="form-control" id="cmtText" aria-label="Amount (to the nearest dollar)">
+	  <button type="button" class="btn btn-success" id="cmtPostBtn">등록</button>
+	</div>
+   
+      <!-- 댓글 표시 라인 -->
+   <ul class="list-group list-group-flush" id="cmtListArea">
+	  <li class="list-group-item">
+	  	<div class="mb-3">
+	  		<div class="fw-bold">Writer</div>
+	  		content
+	  	</div>
+	  	<span class="badge rounded-pill text-bg-warning">modAt</span>
+	  </li>
+	</ul>
+   
+	<br>
+	
+	<!-- moreBtn -->
+	<div>
+		<button type="button" id="moreBtn" data-page="1" class="btn btn-outline-dark" style="visibility:hidden" >MORE+</button>
+	</div>
+	<!-- 모달라인 -->	
+	
+<div class="modal" id="myModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">댓글 수정</h5>
+         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+      <input type="text" class="form-control"  id="cmtTextMod">
+      </div>
+      <div class="modal-footer">
+        <button type="button" id="cmtModBtn"  class="btn btn-primary">수정</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+	
+	
+	<!-- 댓글 더보기 버튼 -->
+	<div>
+		<button type="button" id="moreBtn" data-page="1" class="btn btn-outline-dark" style="visibility:hidden" >MORE+</button>
+	</div>
+	 
+	</div>
+	</th:block>
+</th:block>
+	
+
+<script th:inline="javascript">
+const bno = [[${bdto.bvo.bno}]];
+console.log(bno);
+const mod = [[${mod}]]
+if(mod==="1"){
+	alert("수정완료");
+}
+
+document.addEventListener('click', (e)=>{
+	if(e.target.classList.contains('del')){
+		if(confirm('삭제하시겠습니까?')){
+		location.href="/board/delete?bno="+bno;
+	}
+	}
+})
+</script>
+<script src="/js/boardComment.js"></script>
+<script type="text/javascript">
+spreadComment(bno);
+</script>

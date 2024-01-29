@@ -58,12 +58,11 @@ async function getComment(bno,page){
 function spreadComment(bno,page=1){ //page가 없으면 1 있으면 해당 페이지
 	getComment(bno,page).then(result=>{
 		console.log(result);
-		if(result.cmtList.length>0){
 		const ul = document.getElementById('cmtListArea');
+		if(result.cmtList.length>0){
 			if(page ==1){ //1page에서만 댓글 내용 지우기
-				ul.innerHTML=''; //ul에 원래있던 html값 지우기
+				ul.innerHTML='';
 			}
-
 			for(let cvo of result.cmtList) {
 				let li =`<li data-cno="${cvo.cno}" class="list-group-item">`;
 				li += `<div class="mb-3">`;
@@ -73,7 +72,7 @@ function spreadComment(bno,page=1){ //page가 없으면 1 있으면 해당 페�
 				li += `<span class="badge rounded-pill text-bg-warning">${cvo.modAt}</span>`;
 				li += `<div class="d-grid gap-2 d-md-flex justify-content-md-end">`;
 				li += `<button type="button" class="btn btn-outline-warning mod" id="regBtn" style="float: right;" data-bs-toggle="modal" data-bs-target="#myModal">수정</button>`;
-				li += `<button type="button" class="btn btn-outline-danger del" id="regBtn" style="float: right;">삭제</button>`;
+				li += `<button type="button" class="btn btn-outline-danger cdel" id="regBtn" style="float: right;">삭제</button>`;
 				li += `</div>`;
 				li += `</li>`;
 				ul.innerHTML += li;
@@ -122,12 +121,26 @@ document.addEventListener('click',(e)=>{
 				document.querySelector('.btn-close').click();
 			}
 			spreadComment(bno);
-		})
-		
-	}else if(e.target.classList.contains('del')){
+		})	
+	} else if (e.target.classList.contains('cdel')) {
 		//삭제
-	}else if(e.target.id=='moreBtn'){
-		spreadComment(bno,parseInt(e.target.dataset.page));
+		let li = e.target.closest('li');
+		let cno = li.dataset.cno;
+		console.log(cno);
+		if (confirm('댓글을 삭제하시겠습니까?')) {
+			// 서버로 댓글 삭제 요청
+			removeComment(cno).then(result => {
+				if (result === "1") {
+					// 성공적으로 삭제되었을 때
+					spreadComment(bno);
+					alert("댓글이 삭제되었습니다.");
+				} else {
+					alert("댓글 삭제에 실패했습니다.");
+				}
+			});
+		} else if (e.target.id == 'moreBtn') {
+			spreadComment(bno, parseInt(e.target.dataset.page));
+		}
 	}
 });
 
@@ -145,6 +158,21 @@ async function editComment(cmtDataMod){
 		const resp = await fetch (url, config);
 		const result = await resp.text();
 		return result;
+	}catch(error){
+		console.log(error);
+	}
+}
+
+async function removeComment(cno){
+	try{
+		
+		const url = "/comment/remove/"+cno;
+		const config = {
+			method:'delete',
+		};	
+  	 	 const resp = await fetch(url,config);
+         const result = await resp.text();
+         return result;
 	}catch(error){
 		console.log(error);
 	}

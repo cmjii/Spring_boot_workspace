@@ -21,6 +21,8 @@ public interface CommentMapper {
 
 	int getTotal(long bno);
 
+	int delete(long cno);
+
 	
 
 }

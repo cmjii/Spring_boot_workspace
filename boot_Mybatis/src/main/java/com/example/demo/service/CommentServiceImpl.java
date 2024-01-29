@@ -44,5 +44,10 @@ public class CommentServiceImpl implements CommentService{
 		return ph;
 	}
 
+	@Override
+	public int delete(long cno) {
+		return cmapper.delete(cno);
+	}
+
 
 }

@@ -1,0 +1,30 @@
+console.log("in");
+
+document.getElementById('trigger').addEventListener('click',()=>{
+	document.getElementById('files').click();
+});
+
+const regExp = new RegExp("\.(exe|sh|bat|js|dll|msi)$"); //실행파일 막기
+const regExpImg = new RegExp("\.(jpg|jpeg|png|bmp|gif)$");
+const maxSize = 1024*1024*20;
+
+function fileValidation(fileName, fileSize){
+	if(regExp.test(fileName)){
+		return 0;
+	}else if(fileSize > maxSize){
+		return 0;
+	}else{
+		return 1;
+	}
+};
+
+document.addEventListener('change',(e)=>{
+	if(e.target.id=='files'){
+		const fileObj = document.getElementById('files').file; //multipe 배열로 들어옴
+		console.log(fileObj);
+		
+		const div = document.getElementById('fileZone');
+		//이전에 업로드 했던 파일들이 있다면 제거
+		div.innerHTML="";
+	}
+})
