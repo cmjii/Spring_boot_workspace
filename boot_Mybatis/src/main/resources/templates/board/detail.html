@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 <th:block th:replace="~{layout :: setFragment(~{this::content})}">
 	<th:block th:fragment="content"> 
@@ -30,7 +30,7 @@
 		  	<div th:if="${fvo.fileType >0}" class="mb-3">
 		  		<img th:src="@{|/upload/${fvo.saveDir}/${fvo.uuid}_th_${fvo.fileName}|}">
 		  	</div>	
-		  	<div th:if="${fvo.fileType >0}" class="mb-3">
+		  	<div th:if="${!(fvo.fileType >0)}" class="mb-3">
 		  		<i class="bi bi-text-indent-left"></i>
 		  	</div>	
 		  	<div class="mb-3">
@@ -53,7 +53,7 @@
 	</div>
 	<!-- 댓글 등록 라인 -->
    <br><div class="input-group mb-3" style="max-width: 1100px;">
-	  <span class="input-group-text" id="cmtWriter">[[${bdto.bvo.writer}]]</span>
+	  <span class="input-group-text" id="cmtWriter" th:with="auth=${#authentication.getPrincipal()}">[[${auth.mvo.nickName}]]</span>
 	  <input type="text" class="form-control" id="cmtText" aria-label="Amount (to the nearest dollar)">
 	  <button type="button" class="btn btn-success" id="cmtPostBtn">등록</button>
 	</div>

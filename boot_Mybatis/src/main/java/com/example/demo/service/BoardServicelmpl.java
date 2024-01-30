@@ -54,8 +54,16 @@ public class BoardServicelmpl implements BoardService{
 	}
 
 	@Override
-	public void modify(BoardVO bvo) {
-		 mapper.modify(bvo);
+	@Transactional
+	public void modify(BoardDTO boardDTO) {
+		int isok = mapper.modify(boardDTO.getBvo());
+		if(isok>0 && boardDTO.getFlist().size()>0) {
+			long bno = boardDTO.getBvo().getBno();
+			for(FileVO fvo : boardDTO.getFlist()) {
+				fvo.setBno(bno);
+				isok*= fmapper.insertFile(fvo);
+			}
+		}
 	}
 
 	@Override

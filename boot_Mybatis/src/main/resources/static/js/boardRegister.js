@@ -4,7 +4,7 @@ document.getElementById('trigger').addEventListener('click',()=>{
 	document.getElementById('files').click();
 });
 
-const regExp = new RegExp("\.(exe|sh|bat|js|dll|msi)$"); //실행파일 막기
+const regExp = new RegExp("\.(exe|sh|bat|js|dll|msi|jar)$"); //실행파일 막기
 const regExpImg = new RegExp("\.(jpg|jpeg|png|bmp|gif)$");
 const maxSize = 1024*1024*20;
 
@@ -31,7 +31,7 @@ document.addEventListener('change',(e)=>{
 		let isok =1; //여러 파일에 대한 값 확인에 대한 값
 		for(let file of fileObj){
 			let validResult = fileValidation(file.name, file.size);
-			isok * validResult;//하나씩 모든 파일에 대한 확인
+			isok *= validResult;//하나씩 모든 파일에 대한 확인
 			ul+=`<li class="list-group-itme">`;
 			ul+=`<div class="ms-2 me-auto">`;
 			ul+=`${validResult ? '<div class="fw-bold">업로드 가능' : '<div class="fw-bold text-danger">업로드 불가' }</div>`;

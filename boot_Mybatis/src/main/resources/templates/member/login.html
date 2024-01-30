@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{layout :: setFragment(~{this::content})}">
+	<th:block th:fragment="content"> 
+	
+	<br>
+	<div class="container" style="max-width: 600px; border: 2px solid gray; padding: 50px; border-radius: 30px; margin-top: 70px;">
+	<h2 style="font-family: 'Jua', sans-serif; text-align: center;">로그인</h2><br>
+	<form action="/member/login" method="post">
+	<div class="mb-3">
+	  <label for="exampleFormControlInput1" class="form-label">이메일</label>
+	  <input type="email" name="email" class="form-control" id="exampleFormControlInput1" placeholder="Email">
+	</div>
+	
+	<div class="mb-3">
+	  <label for="exampleFormControlInput1" class="form-label">비밀번호</label>
+	  <input type="password" name="pwd" class="form-control" id="exampleFormControlInput1" placeholder="PassWord">
+	</div>
+	
+	
+	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+	  <button type="submit" class="btn btn-outline-success">로그인</button>
+	<a href="/member/register"><button type="button"class="btn btn-outline-secondary" style="float: right;">회원가입</button></a>
+	</div>
+	</form>
+	</div>
+	
+	</th:block>
+</th:block>

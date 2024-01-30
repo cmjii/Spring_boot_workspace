@@ -1,0 +1,60 @@
+package com.example.demo.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
+
+
+
+@Configuration
+@EnableWebSecurity
+public class SecurityVonfig {
+
+	//passwordEncoder => springSecurity5(이후부터 변경사항)
+	//createDekkegatingPasswordEncoder => 암호화는 같음{Bcript}추가
+	
+	@Bean
+	PasswordEncoder passwordEncoder() {
+		return PasswordEncoderFactories.createDelegatingPasswordEncoder();
+	}
+	
+	//SecurityFilterchain 객체로 설정
+	@Bean
+	SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+		return http.csrf(csrf-> csrf.disable())
+				.authorizeHttpRequests(authorize -> authorize
+						.requestMatchers("/","/js/**","/dist/**","/board/list","/member/login",
+								"/member/register","/comment/**","/upload/**").permitAll()
+						.requestMatchers("/member/list").hasRole("ADMIN").anyRequest().authenticated())
+				.formLogin(login -> login
+						.usernameParameter("email")
+						.passwordParameter("pwd")
+						.loginPage("/member/login")
+						.defaultSuccessUrl("/").permitAll())
+				.logout(logout -> logout
+						.logoutUrl("/member/logout")
+						.invalidateHttpSession(true)
+						.deleteCookies("JSESSIONID")
+						.logoutSuccessUrl("/")).build();
+	}
+	
+	
+	//AuthrntivationMavaget // 샛페로 설정
+	@Bean
+	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+	
+	
+	//UserDetailService
+	UserDetailsService userDetailsService() {
+		return new CustomUserService();
+	}
+}

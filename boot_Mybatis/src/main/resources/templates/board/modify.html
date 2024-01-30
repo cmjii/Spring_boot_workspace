@@ -2,33 +2,75 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <th:block th:replace="~{layout :: setFragment(~{this::content})}">
 	<th:block th:fragment="content"> 
-	<form action="/board/modify" method="post" id="form">
+	<form action="/board/modify" method="post" id="form" enctype="multipart/form-data">
 	<div class="container-md" style="max-width: 1100px; border: 0.5px solid gray; padding: 50px; border-radius: 20px; margin-top: 50px;">
 	<h2 style="font-family: 'Jua', sans-serif;">글수정</h2>
-<input type="hidden" name="bno" th:value="${bvo.bno}">
+<input type="hidden" name="bno" th:value="${bdto.bvo.bno}">
 	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-	<div class="mb-3" th:text="${bvo.regAt }" >
+	<div class="mb-3" th:text="${bdto.bvo.regAt }" >
 	</div>
 	<div class="mb-3"  >
 	</div>
 	</div>
 	<div class="input-group mb-3">
 	  <span class="input-group-text" id="basic-addon1">제목</span>
-	  <input type="text" class="form-control" name="title" th:value="${bvo.title}" >
+	  <input type="text" class="form-control" name="title" th:value="${bdto.bvo.title}" >
 	  <span class="input-group-text" id="basic-addon1">작성자</span>
-	  <input type="text" class="form-control" name="writer"  th:value="${bvo.writer}" readonly="readonly">
+	  <input type="text" class="form-control" name="writer"  th:value="${bdto.bvo.writer}" readonly="readonly">
 	</div>
 	<div class="input-group">
 	  <span class="input-group-text">내용</span>
-	  <textarea class="form-control" name="content" >[[${bvo.content}]]</textarea>
+	  <textarea class="form-control" name="content" >[[${bdto.bvo.content}]]</textarea>
 	</div><br>
+	
+		<!-- 파일 출력 라인 -->
+	<div class="mb-3"  >
+		<ul class="list-group list-group-flush">
+		  <li th:each="fvo:${bdto.flist}" class="list-group-item">
+		  	<div th:if="${fvo.fileType >0}" class="mb-3">
+		  		<img th:src="@{|/upload/${fvo.saveDir}/${fvo.uuid}_th_${fvo.fileName}|}">
+		  	</div>	
+		  	<div th:if="${!(fvo.fileType >0)}" class="mb-3">
+		  		<i class="bi bi-text-indent-left"></i>
+		  	</div>	
+		  	<div class="mb-3">
+		  		<div class="fw-bold">[[${fvo.fileName}]]</div>
+		  		[[${fvo.regAt}]]
+		  	</div>
+		  	<span class="badge rounded-pill text-bg-warning">[[${fvo.fileSize}]]Byte</span>
+		  </li>
+		</ul>
+	</div>
+	
+	<!-- file입력 라인 추가 -->
+	<div class="mb-3">
+	 <label for="file" class="form-label">files...</label>
+	  <input type="file" name="files" class="form-control" id="files" multiple="multiple" style="display: none;"> <!-- multiple == 한번에 여러개의 파일을 업로드 -->
+		  <!-- 파일 버튼 트리거 사용하기 위해서 주는 버튼 -->
+		  <br><button type="button" class="btn btn-secondary" id="trigger">FileUpload</button>
+		</div>
+		<!-- 파일 목록 표시라인 -->
+		<div class="mb-3" id="fileZone"></div>
+	
+	<input type="hidden" id="regBtn">
 	 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-	 <button type="submit"class="btn btn-outline-secondary" id="regBtn" style="float: right;">수정</button>
-	 <a th:href="@{/board/delete(bno=${bvo.bno})}"><button type="button" class="btn btn-outline-danger" id="regBtn" style="float: right;">삭제</button></a>
-	 <a th:href="@{/board/detail(bno=${bvo.bno})}"><button type="button" class="btn btn-outline-warnig" id="regBtn" style="float: right;">취소</button></a>
+	 <button type="submit"class="btn btn-outline-secondary" id="btn" style="float: right;">수정</button>
+	 <a th:href="@{/board/delete(bno=${bdto.bvo.bno})}"><button type="button" class="btn btn-outline-danger del" style="float: right;">삭제</button></a>
+	 <a th:href="@{/board/detail(bno=${bdto.bvo.bno})}"><button type="button" class="btn btn-outline-warnig" style="float: right;">취소</button></a>
 	 </div>
 	</div>
 	</form>
 	 <script th:src="@{/js/boardDetail.js}"></script> <!-- 스크립트 사용해서 링크 이동 -->
+	 <script th:src="@{/js/boardRegister.js}"></script>
 	</th:block>
 </th:block>
+
+<script th:inline="javascript">
+document.addEventListener('click', (e)=>{
+	if(e.target.classList.contains('del')){
+		if(confirm('삭제하시겠습니까?')){
+		location.href="/board/delete?bno="+bno;
+	}
+	}
+})
+</script>

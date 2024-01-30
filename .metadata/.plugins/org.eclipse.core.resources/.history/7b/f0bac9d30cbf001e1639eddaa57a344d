@@ -1,0 +1,11 @@
+package com.example.demo.security;
+
+public class AuthVO {
+	private String email;
+	private String pwd;
+	private String nickName;
+	private String regAt;
+	private String lastLogin;
+	private List<AuthVO> authList;
+
+}
